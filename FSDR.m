@@ -101,6 +101,8 @@ switch alg
         B     = tmpX' * L * tmpX + gamma.*speye(numF);
 end
 [U,~] = eigs(A,B,dim);
+U     = bsxfun(@rdivide,U,sqrt(sum(U.^2,1)));
+
 
 %% Encode the data matrices
 tmpX  = tmpX * U;
