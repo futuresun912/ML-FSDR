@@ -10,7 +10,7 @@ dataset     = 'enron';
 load([dataset,'.mat']);
 
 %% Set parameters
-opts.dim    = 100;
+opts.dim    = 100;    % dimensionality of the feature subspace
 opts.gamma  = 1;
 opts.beta   = 0.5;
 opt_w.k     = 10;

@@ -31,6 +31,12 @@ alg    = opts.alg;
 opt_w  = opts.opt_w;
 [numN,numF] = size(X);
 
+%% Error check
+if (dim >= numF) || (dim < 1)
+    Yt    = BR(X,Y,Xt);
+    return;
+end
+
 %% Center the data and target matrices
 tmpY   = Y';
 Xmean  = mean(X,1);
