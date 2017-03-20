@@ -36,6 +36,7 @@ tmpY   = Y';
 Xmean  = mean(X,1);
 tmpX   = bsxfun(@minus,X,Xmean);
 tmpXt  = bsxfun(@minus,Xt,Xmean);
+tmpY   = tmpY(:,any(tmpY,1));  
 tmpY   = bsxfun(@minus,tmpY,mean(tmpY,1));
 
 %% Solve the optimization problem: A*U = B*U*D
@@ -59,7 +60,6 @@ switch alg
         A     = Sxy * Sxy';
         B     = Sxx + gamma.*speye(numF);
     case 'cca'  % CCA
-        tmpY  = tmpY(:,any(tmpY,1));  
         Sxx   = tmpX' * tmpX;
         Sxy   = tmpX' * tmpY;
         Syy   = tmpY' * tmpY;
@@ -102,7 +102,6 @@ switch alg
 end
 [U,~] = eigs(A,B,dim);
 U     = bsxfun(@rdivide,U,sqrt(sum(U.^2,1)));
-
 
 %% Encode the data matrices
 tmpX  = tmpX * U;
