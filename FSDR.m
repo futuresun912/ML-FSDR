@@ -106,6 +106,8 @@ switch alg
         A     = Sxz * W * Sxz';
         B     = tmpX' * L * tmpX + gamma.*speye(numF);
 end
+A     = (A+A') / 2;
+B     = (B+B') / 2;
 [U,~] = eigs(A,B,dim);
 U     = bsxfun(@rdivide,U,sqrt(sum(U.^2,1)));
 

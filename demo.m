@@ -9,6 +9,13 @@ opts.alg    = 'pca';  % pca, mddm, mlsi, cca, mlda, opls, hsl, lpp, npe
 dataset     = 'enron';
 load([dataset,'.mat']);
 
+%% Scale data into [0,1] in coloumn-wise
+data = data(:,any(data,1)); 
+minX = min(data,[],1);
+diff = max(data,[],1) - minX;
+data = bsxfun(@minus,data,minX);
+data = bsxfun(@rdivide,data,diff);
+
 %% Set parameters
 opts.dim    = 100;    % dimensionality of the feature subspace
 opts.gamma  = 1;
