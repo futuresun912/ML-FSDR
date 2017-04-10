@@ -20,9 +20,10 @@ data = bsxfun(@rdivide,data,diff);
 opts.dim    = 100;    % dimensionality of the feature subspace
 opts.gamma  = 1;
 opts.beta   = 0.5;
-opt_w.k     = 10;
-opt_w.NeighborMode = 'KNN';
-opt_w.WeightMode   = 'HeatKernel';
+optw.k      = 10;
+optw.t      = 1;
+optw.NeighborMode = 'KNN';
+optw.WeightMode   = 'HeatKernel';
 opts.opt_w  = opt_w;
 
 %% Perform n-fold cross validation
