@@ -15,7 +15,6 @@ function Yt = FSDR(X,Y,Xt,opts)
 % References:
 % PCA:  Peason, K. (1901). On lines and planes of closest fit to systems of point in space. Philosophical Magazine, 2(11), 559-572.
 % LPP:  He, X., & Niyogi, P. (2003, December). Locality preserving projections. In NIPS (Vol. 16, No. 2003).
-% NPE:  He, X., Cai, D., Yan, S., & Zhang, H. J. (2005, October). Neighborhood preserving embedding. In Computer Vision, 2005. ICCV 2005. Tenth IEEE International Conference on (Vol. 2, pp. 1208-1213). IEEE.
 % MLSI: Yu, K., Yu, S., & Tresp, V. (2005, August). Multi-label informed latent semantic indexing. In Proceedings of the 28th annual international ACM SIGIR conference on Research and development in information retrieval (pp. 258-265). ACM.
 % MLDA: Wang, H., Ding, C., & Huang, H. (2010, September). Multi-label linear discriminant analysis. In European Conference on Computer Vision (pp. 126-139). Springer Berlin Heidelberg.
 % MDDM: Zhang, Y., & Zhou, Z. H. (2010). Multilabel dimensionality reduction via dependence maximization. ACM Transactions on Knowledge Discovery from Data (TKDD), 4(3), 14.
@@ -28,7 +27,7 @@ dim    = opts.dim;
 gamma  = opts.gamma;
 beta   = opts.beta;
 alg    = opts.alg;
-opt_w  = opts.opt_w;
+optw   = opts.optw;
 [numN,numF] = size(X);
 
 %% Error check
@@ -72,23 +71,16 @@ switch alg
         A     = Sxy / Syy * Sxy';
         B     = Sxx + gamma.*speye(numF);
     case 'hsl'  % HSL
-        W     = constructW(Y',opt_w);
+        W     = constructW(Y',optw);
         D     = sparse(1:numN,1:numN,sum(W,1),numN,numN);
         Sxx   = tmpX' * tmpX;
         A     = tmpX' * (D.^.5*W*D.^.5) * tmpX;
         B     = Sxx + gamma.*speye(numF);
     case 'lpp'  % LPP
-        W     = constructW(X,opt_w);
+        W     = constructW(X,optw);
         D     = sparse(1:numN,1:numN,sum(W,1),numN,numN);
         A     = tmpX' * W * tmpX;
         B     = tmpX' * D * tmpX + gamma.*speye(numF);
-    case 'npe'  % NPE
-        W     = constructW(X,opt_w);
-        M     = speye(numN) - W;
-        M     = M'*M;
-        Sxx   = tmpX' * tmpX;
-        A     = tmpX' * M * tmpX;
-        B     = Sxx + gamma.*speye(numF);
     case 'mlda' % MLDA
         newY  = Y(any(Y,2),:);  
         C     = 1 - pdist(newY,'cosine');
@@ -106,8 +98,8 @@ switch alg
         A     = Sxz * W * Sxz';
         B     = tmpX' * L * tmpX + gamma.*speye(numF);
 end
-A     = (A+A') / 2;
-B     = (B+B') / 2;
+A     = max(A,A');
+B     = max(B,B');
 [U,~] = eigs(A,B,dim);
 U     = bsxfun(@rdivide,U,sqrt(sum(U.^2,1)));
 

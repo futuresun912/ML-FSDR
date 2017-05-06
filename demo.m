@@ -5,26 +5,18 @@ rng('default');
 addpath('data','func','eval');
 
 %% Load a FSDR algorithm and a dataset
-opts.alg    = 'pca';  % pca, mddm, mlsi, cca, mlda, opls, hsl, lpp, npe
+opts.alg    = 'pca';  % pca, mddm, mlsi, cca, mlda, opls, hsl, lpp
 dataset     = 'enron';
 load([dataset,'.mat']);
 
-%% Scale data into [0,1] in coloumn-wise
-data = data(:,any(data,1)); 
-minX = min(data,[],1);
-diff = max(data,[],1) - minX;
-data = bsxfun(@minus,data,minX);
-data = bsxfun(@rdivide,data,diff);
-
 %% Set parameters
-opts.dim    = 100;    % dimensionality of the feature subspace
+opts.dim    = 50;    % dimensionality of the feature subspace
 opts.gamma  = 1;
 opts.beta   = 0.5;
 optw.k      = 10;
-optw.t      = 1;
 optw.NeighborMode = 'KNN';
-optw.WeightMode   = 'HeatKernel';
-opts.opt_w  = opt_w;
+optw.WeightMode   = 'Cosine';
+opts.optw   = optw;
 
 %% Perform n-fold cross validation
 numFold = 5; 
